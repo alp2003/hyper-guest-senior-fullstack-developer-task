@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { Request } from 'express';
-import { User } from '../users/users.entity';
+import { User, UserStatus } from '../users/users.entity';
 
 interface RequestWithUser extends Request {
   user?: User;
@@ -28,6 +28,11 @@ export class AuthGuard implements CanActivate {
 
     if (!user) {
       throw new UnauthorizedException('User not found');
+    }
+
+    // Added check if the user is deleted
+    if (user.status === UserStatus.Deleted) {
+      throw new UnauthorizedException('User account is deleted');
     }
 
     request.user = user;

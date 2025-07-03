@@ -1,19 +1,37 @@
-import { createStore } from "vuex"
+import { createStore } from "vuex";
 
 export default createStore({
-	state: {
-		// Define your state here
-	},
-	getters: {
-		// Define your getters here
-	},
-	mutations: {
-		// Define your mutations here
-	},
-	actions: {
-		// Define your actions here
-	},
-	modules: {
-		// Define your modules here
-	},
-})
+  state: {
+    user: null, 
+  },
+
+  getters: {
+    isAuthenticated: state => !!state.user,
+    userRoles: state => state.user?.roles || [],
+    userStatus: state => state.user?.status,
+    hasRole: state => role => state.user?.roles?.includes(role),
+    isDeleted: state => state.user?.status === 'deleted',
+  },
+
+  mutations: {
+    setUser(state, user) {
+      user.roles = Array.isArray(user.roles) ? user.roles : [user.roles];
+      state.user = user;
+    },
+    logout(state) {
+      state.user = null;
+    },
+  },
+
+  actions: {
+    async fetchUser({ commit }) {
+      const mockUser = {
+        username: "admin_user",
+        roles: ["Admin"],
+        status: "enabled",
+      };
+
+      commit("setUser", mockUser);
+    },
+  },
+});

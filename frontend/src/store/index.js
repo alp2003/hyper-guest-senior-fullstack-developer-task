@@ -11,6 +11,7 @@ export default createStore({
     userStatus: state => state.user?.status,
     hasRole: state => role => state.user?.roles?.includes(role),
     isDeleted: state => state.user?.status === 'deleted',
+    username: state => state.user?.username || '',
   },
 
   mutations: {
@@ -24,14 +25,18 @@ export default createStore({
   },
 
   actions: {
-    async fetchUser({ commit }) {
-      const mockUser = {
-        username: "admin_user",
-        roles: ["Admin"],
-        status: "enabled",
-      };
-
-      commit("setUser", mockUser);
+     async login({ commit }, username) {
+      const res = await axios.post(`/api/users/login/${username}`);
+      commit("setUser", res.data);
     },
+    // async fetchUser({ commit }) {
+    //   const mockUser = {
+    //     username: "admin_user",
+    //     roles: ["Admin"],
+    //     status: "enabled",
+    //   };
+
+    //   commit("setUser", mockUser);
+    // },
   },
 });
